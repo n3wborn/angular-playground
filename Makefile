@@ -4,6 +4,7 @@ PORTS2 = 49153:49153
 NODE-IMAGE = node:lts-slim
 PKG_MANAGER = npm
 CONTAINER_NAME = angular-container
+SHELL := /bin/bash
 
 %:
 	@:
