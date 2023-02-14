@@ -4,10 +4,15 @@ PORTS2 = 49153:49153
 NODE-IMAGE = node:lts-slim
 PKG_MANAGER = npm
 CONTAINER_NAME = angular-container
+IMAGE_NAME := angular-image
 SHELL := /bin/bash
 
 %:
 	@:
+
+.PHONY: build_image
+build_image:
+	docker build --no-cache --force-rm -t $(IMAGE_NAME) .
 
 .PHONY: start
 start:
@@ -17,21 +22,34 @@ start:
 		-u "node" \
 		-w /home/node/app \
 		-v $(PWD)/angular-app:/home/node/app \
-		$(NODE-IMAGE) \
+		$(IMAGE_NAME) \
 		$(PKG_MANAGER) run start
 
-.PHONY: install
-install:
+.PHONY: install_deps
+install_deps: build_image
 	docker run --rm -it \
 		-u "node" \
 		-w /home/node/app \
 		-v $(PWD)/angular-app:/home/node/app \
-		$(NODE-IMAGE) \
+		$(IMAGE_NAME) \
 		$(PKG_MANAGER) install
+
+.PHONY: install
+install: build_image install_deps
+	docker run --rm -it \
+		-u "node" \
+		-w /home/node/app \
+		-v $(PWD)/angular-app:/home/node/app \
+		$(IMAGE_NAME) \
+		$(PKG_MANAGER) start
 
 .PHONY: bash
 bash:
 	docker exec -it $(CONTAINER_NAME) bash
+
+.PHONY: ng
+ng:
+	docker exec -it $(CONTAINER_NAME) ng $(filter-out $@,$(MAKECMDGOALS))
 
 .PHONY: add_dev_deps
 add_dev_deps:
