@@ -22,6 +22,7 @@ start:
 		-u "node" \
 		-w /home/node/app \
 		-v $(PWD)/angular-app:/home/node/app \
+		--name $(CONTAINER_NAME) \
 		$(IMAGE_NAME) \
 		$(PKG_MANAGER) run start
 
@@ -40,8 +41,9 @@ install: build_image install_deps
 		-u "node" \
 		-w /home/node/app \
 		-v $(PWD)/angular-app:/home/node/app \
+		--name $(CONTAINER_NAME) \
 		$(IMAGE_NAME) \
-		$(PKG_MANAGER) start
+		$(PKG_MANAGER) run start
 
 .PHONY: bash
 bash:
