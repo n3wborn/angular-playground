@@ -45,6 +45,12 @@ install: build_image install_deps
 		$(IMAGE_NAME) \
 		$(PKG_MANAGER) run start
 
+.PHONY: update_deps
+update_deps:
+	docker exec \
+		$(CONTAINER_NAME) \
+		$(PKG_MANAGER) update
+
 .PHONY: bash
 bash:
 	docker exec -it $(CONTAINER_NAME) bash
